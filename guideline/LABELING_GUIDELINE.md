@@ -35,6 +35,20 @@ atau obrolan sehari-hari.
 - "Transaksi Anda sebesar Rp150.000 di Indomaret berhasil. Saldo Anda saat
   ini Rp850.000."
 
+### 4. OTHER_SPAM
+Pesan yang bersifat spam/promosi tapi TIDAK terkait finansial (e-wallet, bank,
+transaksi, investasi). Termasuk iklan jasa umum (dukun, obat, dll), spam
+non-finansial lainnya.
+
+**Contoh jelas:**
+- "JASA DUKUN SANTET & PELET RESMI TERPERCAYA... Menang Perkara Tlp/Wa. xxx"
+
+## Catatan Revisi
+- v1.0 → v1.1: menambah kategori OTHER_SPAM setelah menemukan dataset berisi
+  spam non-finansial yang tidak fit ke 3 kategori awal (fraud/promo/normal).
+  Ini konsisten dengan sifat dataset sumber yang general-purpose SMS spam,
+  bukan spesifik fintech.
+
 ## Kasus Ambigu & Cara Memutuskan
 
 | Kasus | Keputusan | Alasan |
