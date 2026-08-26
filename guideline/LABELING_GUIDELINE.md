@@ -15,6 +15,10 @@ dengan iming-iming uang, **skema biaya tersembunyi/auto-subscribe berkedok
 gratis (RBT, konten premium, dll), atau penawaran barang bernilai tinggi
 dengan harga tidak masuk akal via kontak pribadi/non-resmi (indikasi
 penipuan jual-beli).**
+**atau penawaran pinjaman online ilegal
+dengan pola: tanpa agunan/jaminan, syarat hanya KTP/KK, bunga sangat rendah
+tidak wajar (mis. <1%/bulan), proses pencairan instan, kontak hanya via
+WA/chat pribadi tanpa identitas resmi OJK.**
 
 **Contoh jelas:**
 - "Selamat! Nomor anda mendapatkan hadiah Rp50.000.000 dari GoPay. Klik link
@@ -67,3 +71,8 @@ non-finansial lainnya.
   trap dan scam jual-beli harga tidak wajar (ditemukan dari analisis Cohen's
   Kappa pass1 vs pass2, kappa=0.901, 3 disagreement cases). Menambahkan
   heuristik tense-based untuk membedakan NORMAL vs PROMO_LEGIT.
+- v1.2 → v1.3: menambahkan pola pinjaman online ilegal (pinjol) ke definisi
+  FRAUD_SCAM. Ditemukan dari evaluasi LLM-assisted labeling: model (gpt-oss-20b)
+  recall FRAUD_SCAM hanya 0.72 karena guideline v1.2 tidak eksplisit mencakup
+  pola pinjol, meski ini 40% dari dataset (26/65). Model salah klasifikasi
+  11 kasus pinjol sebagai OTHER_SPAM.
