@@ -1,4 +1,4 @@
-# FinText-QC Labeling Guideline v1.0
+# FinText-QC Labeling Guideline v1.3
 
 ## Tujuan
 Mengklasifikasikan pesan SMS/chat berbahasa Indonesia ke dalam kategori terkait
