@@ -21,15 +21,13 @@ INPUT_PATH = "data/processed/cleaned.jsonl"
 
 
 def parse_pass_name() -> str:
-    """Ambil nama pass (pass1/pass2) dari argumen CLI setelah '--'."""
+    """Ambil nama pass (pass1/pass2) dari argumen CLI.
+    Streamlit sudah membuang '--' pemisah sebelum meneruskan ke script,
+    jadi sys.argv[1:] langsung berisi argumen milik script ini.
+    """
     parser = argparse.ArgumentParser()
     parser.add_argument("--pass_name", default="pass1")
-    # Streamlit meneruskan argumen custom setelah '--', ambil manual
-    if "--" in sys.argv:
-        args = sys.argv[sys.argv.index("--") + 1:]
-    else:
-        args = []
-    parsed, _ = parser.parse_known_args(args)
+    parsed, _ = parser.parse_known_args(sys.argv[1:])
     return parsed.pass_name
 
 
