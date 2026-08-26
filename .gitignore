@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# Go
+ingestion/ingestion
+*.exe
+*.test
+
+# Data (raw data besar / hasil generate)
+data/raw/*.csv
+data/processed/*.jsonl
+data/labeled/*.jsonl
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/labeled/.gitkeep
+
+# Environment & secrets
+.env
+*.env.local
+
+# OS/editor
+.DS_Store
+.vscode/
+*.log
