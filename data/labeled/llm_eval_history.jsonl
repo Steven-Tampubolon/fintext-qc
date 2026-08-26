@@ -1,0 +1,2 @@
+{"timestamp": "2026-08-26 (recorded manually)", "model": "openai/gpt-oss-20b", "guideline_version": "v1.2", "accuracy": 0.7846, "recall_fraud_scam": 0.7234, "n_samples": 65}
+{"timestamp": "2026-08-26 (recorded manually)", "model": "openai/gpt-oss-20b", "guideline_version": "v1.3", "accuracy": 0.9385, "recall_fraud_scam": 0.9362, "n_samples": 65}
