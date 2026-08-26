@@ -15,7 +15,7 @@ building, bukan proses di baliknya).
 ## Arsitektur
 
 ```
-Raw SMS Data (public dataset + manual seed)
+Raw SMS Data (public dataset + manual seed)`
         │
         ▼
 [Go] Ingestion Service — validasi, dedup, cleaning
@@ -46,7 +46,7 @@ Raw SMS Data (public dataset + manual seed)
 ## Metodologi & Hasil
 
 ### 1. Labeling Guideline
-Guideline (`guideline/LABELING_GUIDELINE.md`) mendefinisikan 4 kategori:
+Guideline ([`guideline/LABELING_GUIDELINE.md`](guideline/LABELING_GUIDELINE.md)) mendefinisikan 4 kategori:
 `FRAUD_SCAM`, `PROMO_LEGIT`, `NORMAL`, `OTHER_SPAM`. Direvisi 3 kali (v1.1 →
 v1.3) berdasarkan temuan empiris dari proses labeling & evaluasi, bukan
 disusun sekali jadi di awal.
@@ -94,6 +94,10 @@ lanjut untuk menghindari overfitting guideline ke sample kecil (n=65):
   (brand asli, leetspeak berat).
 - Satu kasus (testimoni gaya supranatural) berada di area abu-abu bahkan
   untuk anotator manusia.
+
+## Preview Dashboard
+
+![FinText-QC Trust Dashboard](assets/dashboard.png)
 
 ## Cara Menjalankan
 
