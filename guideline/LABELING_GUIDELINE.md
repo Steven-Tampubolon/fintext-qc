@@ -61,6 +61,24 @@ non-finansial lainnya.
 | Promo "gratis Xhari" tapi ada skema tarif berlanjut otomatis setelahnya | FRAUD_SCAM | Hidden fee/auto-subscribe trap = penipuan finansial meski tidak minta OTP |
 | Barang bernilai tinggi (elektronik dll) dijual jauh di bawah harga pasar wajar, transaksi via WA pribadi | FRAUD_SCAM | Harga tidak masuk akal + channel non-resmi = pola scam jual-beli klasik |
 
+## Known Limitations (dari evaluasi LLM-assisted labeling)
+
+Setelah revisi guideline v1.3, LLM (openai/gpt-oss-20b) mencapai 93.85% accuracy
+vs label manusia. 4 kasus sisa yang masih berbeda:
+
+1. Model rentan terhadap **keyword bias**: pesan yang menyebut "OTP" cenderung
+   diklasifikasikan FRAUD_SCAM meski konteksnya adalah pesan resmi anti-phishing
+   (mis. "Jangan berikan kode ini ke siapapun"). Model tampaknya pattern-match
+   ke kata kunci, bukan memahami arah/konteks kalimat.
+2. Model kurang konsisten mendeteksi fraud yang dibungkus format promosi resmi
+   (nama brand asli seperti "LAZADA", format huruf kapital/leetspeak berat).
+3. Kasus testimoni gaya supranatural ("AKI JAGAT" dst) berada di area abu-abu
+   antara FRAUD_SCAM dan OTHER_SPAM bahkan untuk anotator manusia.
+
+**Keputusan:** tidak dilakukan revisi guideline lebih lanjut untuk kasus-kasus
+ini, untuk menghindari overfitting guideline ke sample kecil (n=65). Kasus ini
+didokumentasikan sebagai batasan model & arah pengembangan lanjutan.
+
 ## Versi & Riwayat Revisi
 - v1.0 25-agustus-2025 — versi awal
 - v1.0 → v1.1: menambah kategori OTHER_SPAM setelah menemukan dataset berisi
