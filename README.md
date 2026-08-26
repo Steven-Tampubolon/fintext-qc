@@ -1,28 +1,52 @@
 # FinText-QC — Fraud/Scam Text Labeling & Data Quality Pipeline
 
-🔗 **Live Dashboard Demo:** https://fintext-qc.streamlit.app
+An end-to-end simulation pipeline for collecting, validating, labeling, and
+measuring the quality of Indonesian-language financial fraud text data —
+designed to mirror the process of preparing LLM training data in a digital
+payments context.
+
+🔗 **[Live Dashboard Demo](https://fintext-qc.streamlit.app)**
 
 ---
 
-Simulasi end-to-end pipeline untuk mengumpulkan, memvalidasi, melabeli, dan
-mengukur kualitas data teks terkait fraud finansial berbahasa Indonesia —
-dirancang untuk mencerminkan proses penyiapan data training LLM di konteks
-platform pembayaran digital.
+## 1. Problem Statement
 
-## Kenapa Proyek Ini Dibuat
+Most data science projects focus on model building, even though model
+quality depends heavily on the quality of the data behind it — a process
+that's rarely documented explicitly. This project addresses the question:
 
-Dibuat untuk mendalami proses **data collection, validation, labeling, dan
-quality assurance** untuk teks berbahasa Indonesia — area yang jarang
-disentuh proyek data science pada umumnya (yang biasanya fokus ke model
-building, bukan proses di baliknya).
+> **Can we build a data collection and labeling process for Indonesian
+> financial fraud text that is consistent and measurably high-quality —
+> approaching industry standards for LLM training data preparation?**
 
-## Arsitektur
+Specifically, three sub-questions this project answers:
+1. How consistent is a single annotator when labeling the same data at different times? (→ inter-annotator agreement)
+2. Can an LLM be relied upon as a "third annotator" for large-scale validation? (→ LLM-assisted evaluation)
+3. How does a labeling guideline evolve when confronted with real-world data? (→ iterative guideline refinement)
+
+## 2. Data Selection
+
+The public [Indonesia SMS Spam Dataset](https://github.com/bopbi/indonesia-sms-spam-dataset)
+was selected because it contains Indonesian-language SMS spam under the
+`loan` and `prize` categories — the two patterns most relevant to financial
+fraud (illegal online lending & prize scams).
+
+**Limitation found & how it was addressed:** the source dataset turned out
+to contain spam only, with no legitimate message examples at all. To address
+this, `NORMAL`/`PROMO_LEGIT` seed data was created manually (not claimed to
+be real user data) — this decision is documented explicitly rather than
+hidden, since being transparent about data limitations is part of good data
+quality practice.
+
+## 3. Methodology
+
+### Architecture
 
 ```
-Raw SMS Data (public dataset + manual seed)`
+Raw SMS Data (public dataset + manual seed)
         │
         ▼
-[Go] Ingestion Service — validasi, dedup, cleaning
+[Go] Ingestion Service — validation, dedup, cleaning
         │
         ▼
 [Python/Streamlit] Manual Labeling Tool — dual-pass annotation
@@ -31,15 +55,15 @@ Raw SMS Data (public dataset + manual seed)`
 [Python] Quality Analysis — Cohen's Kappa, disagreement detection
         │
         ▼
-[Groq LLM] AI-Assisted Labeling — evaluasi & validasi silang
+[Groq LLM] AI-Assisted Labeling — cross-validation
         │
         ▼
 [Python/Streamlit] Trust & Quality Dashboard
 ```
 
-## Tech Stack
+### Tech Stack
 
-| Komponen | Tools |
+| Component | Tools |
 |---|---|
 | Data Ingestion & Validation | Go |
 | Manual Labeling Tool | Python, Streamlit |
@@ -47,97 +71,120 @@ Raw SMS Data (public dataset + manual seed)`
 | AI-Assisted Labeling | Groq API (openai/gpt-oss-20b) |
 | Dashboard | Python, Streamlit, Pandas |
 
-## Metodologi & Hasil
+### Iterative Guideline Process
 
-### 1. Labeling Guideline
-Guideline ([`guideline/LABELING_GUIDELINE.md`](guideline/LABELING_GUIDELINE.md)) mendefinisikan 4 kategori:
-`FRAUD_SCAM`, `PROMO_LEGIT`, `NORMAL`, `OTHER_SPAM`. Direvisi 3 kali (v1.1 →
-v1.3) berdasarkan temuan empiris dari proses labeling & evaluasi, bukan
-disusun sekali jadi di awal.
+The guideline ([`guideline/LABELING_GUIDELINE.md`](guideline/LABELING_GUIDELINE.md))
+defines 4 categories: `FRAUD_SCAM`, `PROMO_LEGIT`, `NORMAL`, `OTHER_SPAM`.
+It was revised 3 times (v1.1 → v1.3) based on empirical findings from the
+labeling and evaluation process — not designed once and left unchanged:
 
-### 2. Data Sourcing
-Dataset publik [Indonesia SMS Spam Dataset](https://github.com/bopbi/indonesia-sms-spam-dataset)
-(kategori `loan` & `prize`, paling relevan finansial) dikombinasikan dengan
-seed data NORMAL/PROMO_LEGIT buatan manual, karena sumber publik yang
-tersedia murni berisi spam tanpa contoh pesan legit — keterbatasan ini
-didokumentasikan secara eksplisit, bukan disembunyikan.
+- **v1.1 → v1.2**: revised after Cohen's Kappa analysis (see section 4) revealed the FRAUD_SCAM definition was too narrow.
+- **v1.2 → v1.3**: revised after LLM evaluation (see section 4) found that illegal online lending patterns weren't covered.
 
-### 3. Inter-Annotator Agreement
-Melabeli 65 data dalam 2 pass independen, dibandingkan dengan Cohen's Kappa:
+## 4. Findings & Conclusions
 
-| Metrik | Nilai |
+### Inter-Annotator Agreement
+
+65 data points were labeled in 2 independent passes, compared using Cohen's Kappa:
+
+| Metric | Value |
 |---|---|
 | Agreement rate (raw) | 95.38% |
-| **Cohen's Kappa** | **0.901** (*almost perfect*, skala Landis & Koch) |
-| Disagreement cases | 3 dari 65 |
+| **Cohen's Kappa** | **0.901** (*almost perfect*, Landis & Koch scale) |
+| Disagreement cases | 3 out of 65 |
 
-Analisis 3 kasus disagreement mengungkap **guideline v1.1 terlalu sempit**
-(cuma cakup phishing OTP/PIN), sehingga direvisi ke v1.2 untuk mencakup
-hidden-fee trap & harga tidak wajar.
+### LLM-Assisted Labeling & Guideline Iteration
 
-### 4. LLM-Assisted Labeling & Guideline Iteration
-Model `openai/gpt-oss-20b` (via Groq) dipakai sebagai "annotator ketiga"
-untuk validasi silang terhadap label manusia:
+The `openai/gpt-oss-20b` model (via Groq) was used as a "third annotator" for
+cross-validation against human labels:
 
-| Versi Guideline | Accuracy | Recall FRAUD_SCAM |
+| Guideline Version | Accuracy | FRAUD_SCAM Recall |
 |---|---|---|
 | v1.2 | 78.46% | 72.34% (34/47) |
 | **v1.3** | **93.85%** | **93.62% (44/47)** |
 
-Root cause gap v1.2 → v1.3: guideline tidak eksplisit mencakup pola
-**pinjaman online ilegal** (40% dari dataset), sehingga model salah
-mengklasifikasikannya sebagai OTHER_SPAM. Setelah revisi, recall naik
-signifikan tanpa menurunkan precision kategori lain.
+**Root cause of the v1.2 → v1.3 gap:** the guideline did not explicitly
+cover the **illegal online lending** pattern (40% of the dataset), causing
+the model to misclassify it as OTHER_SPAM. After the revision, recall
+improved significantly without reducing precision in other categories.
 
-### 5. Known Limitations
-4 kasus disagreement tersisa (setelah v1.3) sengaja **tidak** dipatch lebih
-lanjut untuk menghindari overfitting guideline ke sample kecil (n=65):
-- Model menunjukkan **keyword bias**: pesan yang menyebut "OTP" cenderung
-  diklasifikasikan FRAUD_SCAM meski konteksnya pesan resmi anti-phishing.
-- Model kurang konsisten pada fraud yang dibungkus format promosi resmi
-  (brand asli, leetspeak berat).
-- Satu kasus (testimoni gaya supranatural) berada di area abu-abu bahkan
-  untuk anotator manusia.
+### Known Limitations
 
-## Preview Dashboard
+4 remaining disagreement cases (after v1.3) were deliberately **not**
+patched further, to avoid overfitting the guideline to a small sample (n=65):
+- The model shows **keyword bias**: messages mentioning "OTP" tend to be
+  classified as FRAUD_SCAM even when the context is an official
+  anti-phishing message.
+- The model is less consistent at detecting fraud disguised as official
+  promotions (real brand names, heavy leetspeak formatting).
+- One case (a supernatural-style testimonial) sits in a gray area between
+  FRAUD_SCAM and OTHER_SPAM even for human annotators.
+
+**Conclusion:** labeling guideline quality has a direct, measurable impact
+on the quality of the resulting data (a 15.4 percentage-point accuracy delta
+from a single revision cycle), and LLM evaluation is an effective mechanism
+for detecting guideline gaps that human annotators may not notice.
+
+## 5. Report & Presentation
+
+- **[Live Dashboard](https://fintext-qc.streamlit.app)** — a visual summary of all findings above (label distribution, accuracy trend per guideline revision, confusion matrix, known limitations).
 
 ![FinText-QC Trust Dashboard](assets/dashboard.png)
 
-## Cara Menjalankan
+- Full history of design decisions & guideline revisions: [`guideline/LABELING_GUIDELINE.md`](guideline/LABELING_GUIDELINE.md)
+
+---
+
+## How to Run
 
 ```bash
-# 1. Ingestion & validasi data
+# 1. Data ingestion & validation
 cd ingestion && go run main.go -input=../data/raw/raw_sms.csv
 
-# 2. Labeling manual (2 pass)
+# 2. Manual labeling (2 passes)
 streamlit run labeling_tool/app.py -- --pass_name pass1
 streamlit run labeling_tool/app.py -- --pass_name pass2
 
-# 3. Resolusi label final & analisis agreement
+# 3. Final label resolution & agreement analysis
 python quality/resolve_final_labels.py
 python quality/agreement.py
 
-# 4. LLM-assisted labeling (butuh GROQ_API_KEY di .env)
+# 4. LLM-assisted labeling (requires GROQ_API_KEY in .env)
 python quality/llm_annotator.py
 
 # 5. Dashboard
 streamlit run dashboard/dashboard.py
 ```
 
-## Struktur Proyek
+## Project Structure
 
 ```
 fintext-qc/
-├── guideline/LABELING_GUIDELINE.md   # v1.0 -> v1.3, riwayat revisi lengkap
-├── ingestion/                        # Go: validasi & cleaning data
-├── labeling_tool/                    # Python: tool pelabelan manual
-├── quality/                          # Python: metrik & LLM evaluation
+├── guideline/LABELING_GUIDELINE.md   # v1.0 -> v1.3, full revision history
+├── ingestion/                        # Go: data validation & cleaning
+├── labeling_tool/                    # Python: manual labeling tool
+├── quality/                          # Python: metrics & LLM evaluation
 ├── dashboard/                        # Python: trust/quality dashboard
-└── data/                             # raw, processed, labeled (gitignored)
+└── data/                             # raw, processed, labeled
 ```
 
-## Catatan
-Dataset asli bersumber dari repositori publik CC0 (bebas pakai). Seed data
-NORMAL/PROMO_LEGIT dibuat manual untuk keperluan demonstrasi, bukan data
-transaksi nyata dari pengguna manapun.
+## Notes
 
+The original dataset is sourced from a public CC0 (free to use) repository.
+NORMAL/PROMO_LEGIT seed data was created manually for demonstration purposes
+and is not real transaction data from any user.
+
+---
+
+## Certificate & Badges
+
+**Steven Oktavian**
+
+<a href="https://www.credly.com/badges/a984c9e8-b817-4ac7-8af0-4a810aa0517b/public_url">
+  <img src="https://images.credly.com/images/b38a42e0-dc58-4ce2-b6c0-28d978e8aaad/linkedin_thumb_image.png" width="150">
+</a>
+<a href="https://www.credly.com/badges/b434036f-9725-42bd-8fb6-fda18471fd78/public_url">
+  <img src="https://images.credly.com/images/3f802526-7274-4230-91ab-f6d1a35340e6/linkedin_thumb_image.png" width="150">
+</a>
+
+*Introduction to Data Science & Python Essentials 2 — Cisco Networking Academy*

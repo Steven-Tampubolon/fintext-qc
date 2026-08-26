@@ -16,8 +16,6 @@ data/processed/*.jsonl
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
-# Hasil akhir labeling di-commit (kecil, untuk keperluan demo/deploy dashboard)
-
 # Environment & secrets
 .env
 *.env.local
