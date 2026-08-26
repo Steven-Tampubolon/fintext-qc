@@ -181,10 +181,10 @@ and is not real transaction data from any user.
 **Steven Oktavian**
 
 <a href="https://www.credly.com/badges/a984c9e8-b817-4ac7-8af0-4a810aa0517b/public_url">
-  <img src="https://images.credly.com/images/b38a42e0-dc58-4ce2-b6c0-28d978e8aaad/linkedin_thumb_image.png" width="150">
+  <img src="https://images.credly.com/images/b38a42e0-dc58-4ce2-b6c0-28d978e8aaad/linkedin_thumb_image.png" width="350">
 </a>
 <a href="https://www.credly.com/badges/b434036f-9725-42bd-8fb6-fda18471fd78/public_url">
-  <img src="https://images.credly.com/images/3f802526-7274-4230-91ab-f6d1a35340e6/linkedin_thumb_image.png" width="150">
+  <img src="https://images.credly.com/images/3f802526-7274-4230-91ab-f6d1a35340e6/linkedin_thumb_image.png" width="350">
 </a>
 
 *Introduction to Data Science & Python Essentials 2 — Cisco Networking Academy*
