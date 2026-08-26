@@ -63,7 +63,7 @@ non-finansial lainnya.
   spam non-finansial yang tidak fit ke 3 kategori awal (fraud/promo/normal).
   Ini konsisten dengan sifat dataset sumber yang general-purpose SMS spam,
   bukan spesifik fintech.
-  - v1.1 → v1.2: memperluas definisi FRAUD_SCAM mencakup hidden-fee subscription
+- v1.1 → v1.2: memperluas definisi FRAUD_SCAM mencakup hidden-fee subscription
   trap dan scam jual-beli harga tidak wajar (ditemukan dari analisis Cohen's
   Kappa pass1 vs pass2, kappa=0.901, 3 disagreement cases). Menambahkan
   heuristik tense-based untuk membedakan NORMAL vs PROMO_LEGIT.
