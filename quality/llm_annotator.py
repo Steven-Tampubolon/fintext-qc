@@ -105,6 +105,24 @@ def main():
 
     accuracy = sum(r["match"] for r in valid_results) / len(valid_results)
 
+     # Simpan riwayat evaluasi supaya bisa lihat tren before/after guideline revision
+    HISTORY_PATH = "data/labeled/llm_eval_history.jsonl"
+    recall_fraud = sum(
+        1 for r in valid_results if r["human_label"] == "FRAUD_SCAM" and r["match"]
+    ) / max(1, sum(1 for r in valid_results if r["human_label"] == "FRAUD_SCAM"))
+
+    history_entry = {
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
+        "model": MODEL_NAME,
+        "guideline_version": os.getenv("GUIDELINE_VERSION", "unknown"),
+        "accuracy": round(accuracy, 4),
+        "recall_fraud_scam": round(recall_fraud, 4),
+        "n_samples": len(valid_results),
+    }
+    with open(HISTORY_PATH, "a", encoding="utf-8") as f:
+        f.write(json.dumps(history_entry, ensure_ascii=False) + "\n")
+    print(f"\nRun history dicatat ke {HISTORY_PATH}")
+
     print("\n=== LLM vs Human Labeling Report ===")
     print(f"Model             : {MODEL_NAME}")
     print(f"Total data        : {len(results)}")
