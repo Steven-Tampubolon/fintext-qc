@@ -11,7 +11,10 @@ pembayaran digital.
 Pesan yang mengandung indikasi penipuan finansial: permintaan transfer dengan
 embel-embel hadiah/undian, phishing (minta OTP/PIN/kode verifikasi), 
 mengaku dari bank/e-wallet resmi tapi minta data sensitif, link mencurigakan
-dengan iming-iming uang.
+dengan iming-iming uang, **skema biaya tersembunyi/auto-subscribe berkedok
+gratis (RBT, konten premium, dll), atau penawaran barang bernilai tinggi
+dengan harga tidak masuk akal via kontak pribadi/non-resmi (indikasi
+penipuan jual-beli).**
 
 **Contoh jelas:**
 - "Selamat! Nomor anda mendapatkan hadiah Rp50.000.000 dari GoPay. Klik link
@@ -43,12 +46,6 @@ non-finansial lainnya.
 **Contoh jelas:**
 - "JASA DUKUN SANTET & PELET RESMI TERPERCAYA... Menang Perkara Tlp/Wa. xxx"
 
-## Catatan Revisi
-- v1.0 → v1.1: menambah kategori OTHER_SPAM setelah menemukan dataset berisi
-  spam non-finansial yang tidak fit ke 3 kategori awal (fraud/promo/normal).
-  Ini konsisten dengan sifat dataset sumber yang general-purpose SMS spam,
-  bukan spesifik fintech.
-
 ## Kasus Ambigu & Cara Memutuskan
 
 | Kasus | Keputusan | Alasan |
@@ -57,7 +54,16 @@ non-finansial lainnya.
 | Notifikasi transaksi tapi nominal tidak masuk akal (misal Rp0 atau minus) | FRAUD_SCAM | Anomali nominal sering jadi indikator awal pesan palsu |
 | Pesan dari kontak tidak dikenal berisi ajakan investasi "untung besar" tanpa link | FRAUD_SCAM | Skema investasi bodong tetap masuk kategori ini walau tanpa link |
 | Promo resmi tapi bahasa terkesan "terlalu mendesak" (urgency tinggi) | PROMO_LEGIT (tandai sebagai `review_needed`) | Urgency saja bukan indikator kuat tanpa permintaan data sensitif — tapi tetap ditandai untuk review kedua |
+| Promo "gratis Xhari" tapi ada skema tarif berlanjut otomatis setelahnya | FRAUD_SCAM | Hidden fee/auto-subscribe trap = penipuan finansial meski tidak minta OTP |
+| Barang bernilai tinggi (elektronik dll) dijual jauh di bawah harga pasar wajar, transaksi via WA pribadi | FRAUD_SCAM | Harga tidak masuk akal + channel non-resmi = pola scam jual-beli klasik |
 
 ## Versi & Riwayat Revisi
 - v1.0 25-agustus-2025 — versi awal
-- *(akan diupdate di Tahap 4 setelah analisis disagreement)*
+- v1.0 → v1.1: menambah kategori OTHER_SPAM setelah menemukan dataset berisi
+  spam non-finansial yang tidak fit ke 3 kategori awal (fraud/promo/normal).
+  Ini konsisten dengan sifat dataset sumber yang general-purpose SMS spam,
+  bukan spesifik fintech.
+  - v1.1 → v1.2: memperluas definisi FRAUD_SCAM mencakup hidden-fee subscription
+  trap dan scam jual-beli harga tidak wajar (ditemukan dari analisis Cohen's
+  Kappa pass1 vs pass2, kappa=0.901, 3 disagreement cases). Menambahkan
+  heuristik tense-based untuk membedakan NORMAL vs PROMO_LEGIT.
