@@ -1,5 +1,9 @@
 # FinText-QC — Fraud/Scam Text Labeling & Data Quality Pipeline
 
+🔗 **Live Dashboard Demo:** https://fintext-qc.streamlit.app
+
+---
+
 Simulasi end-to-end pipeline untuk mengumpulkan, memvalidasi, melabeli, dan
 mengukur kualitas data teks terkait fraud finansial berbahasa Indonesia —
 dirancang untuk mencerminkan proses penyiapan data training LLM di konteks
